@@ -1,7 +1,5 @@
 # GradeNet: Intelligent Network Slicing for Multi-Tenant HPC Clusters
 
-**Paper for IEEE TPDS (Transactions on Parallel and Distributed Systems)**
-
 ## Overview
 
 In shared HPC environments, competing workloads contend for network bandwidth. Current schedulers treat network as a flat resource without awareness of job priorities, traffic patterns, or SLA requirements. This creates network congestion, unfair allocation, and SLA violations.
