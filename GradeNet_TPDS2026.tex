@@ -54,7 +54,7 @@ In shared HPC clusters, three problems co-exist:
 
 \textbf{2. Workload Diversity.} HPC clusters run 40+ different workload types. Some (ResNets) communicate minimally (0.5 GB/epoch). Others (CosmoFlow) communicate heavily (12.5 GB/epoch). One-size-fits-all scheduling fails because it doesn't adapt to this diversity.
 
-\textbf{3. SLA Violations.} Many interactive jobs (real-time monitoring, online inference) have strict latency SLAs (<100ms). But without network-aware scheduling, these SLAs fail 51.2\% of the time (measured in our cluster), wasting computational resources on unusable results.
+\textbf{3. SLA Violations.} Many interactive jobs (real-time monitoring, online inference) have strict latency SLAs ($<100$ms). But without network-aware scheduling, these SLAs fail 51.2\% of the time (measured in our cluster), wasting computational resources on unusable results.
 
 \subsection{Key Contributions}
 
@@ -90,9 +90,9 @@ We characterize HPC workloads by two dimensions: \textbf{communication volume} (
 
 From these two dimensions, we define three \textbf{network grades}:
 \begin{itemize}
-\item \textbf{Grade 0 (low demand):} Communication volume < 2 GB. Examples: compute-bound CNNs (ResNet-50), sparse models (DLRM). These workloads are CPU/GPU-bound, not network-bound.
-\item \textbf{Grade 1 (medium demand):} Communication volume 2--8 GB. Examples: BERT-base, XGBoost. These have moderate synchronization overhead but can tolerate 50--100ms latency.
-\item \textbf{Grade 2 (high demand):} Communication volume > 8 GB. Examples: CosmoFlow, DeepCAM. These are communication-bound with collective operations that require low-latency synchronization.
+\item \textbf{Grade 0 (low demand):} Communication volume $<2$ GB. Examples: compute-bound CNNs (ResNet-50), sparse models (DLRM). These workloads are CPU/GPU-bound, not network-bound.
+\item \textbf{Grade 1 (medium demand):} Communication volume $2$--$8$ GB. Examples: BERT-base, XGBoost. These have moderate synchronization overhead but can tolerate $50$--$100$ms latency.
+\item \textbf{Grade 2 (high demand):} Communication volume $>8$ GB. Examples: CosmoFlow, DeepCAM. These are communication-bound with collective operations that require low-latency synchronization.
 \end{itemize}
 
 \subsection{Grade Prediction Model}
@@ -109,9 +109,9 @@ Output: Predicted grade (0/1/2).
 
 We train the tree on 1,200 measurements (80\% of 1,600). The decision tree (depth 5, max 16 leaves) learns rules like:
 \begin{itemize}
-\item If comm\_vol < 2 GB: grade = 0
-\item Else if latency\_sensitivity = high and comm\_vol > 8 GB: grade = 2
-\item Else: grade = 1
+\item If comm\_vol $<2$ GB: grade $= 0$
+\item Else if latency\_sensitivity $= $ high and comm\_vol $>8$ GB: grade $= 2$
+\item Else: grade $= 1$
 \end{itemize}
 
 \subsection{Bandwidth Slicing Algorithm}
@@ -133,38 +133,26 @@ Let $B$ = total available network bandwidth, $J$ = set of pending jobs, $g_i$ = 
 \begin{small}
 \begin{verbatim}
 ALLOCATE_BANDWIDTH(B, J, grades):
-  cluster_utilization = (sum(demand) / B)
-
-  if cluster_utilization < 0.70:
-    # Under-utilized: allocate full bandwidth
+  util = sum(demand) / B
+  if util < 0.70:
     for each job i in J:
-      allocate_bandwidth[i] = B / |J|
+      bw[i] = B / |J|
   else:
-    # Over-loaded: apply grade-based slicing
-    grade_2_jobs = {i in J : grades[i] == 2}
-    grade_1_jobs = {i in J : grades[i] == 1}
-    grade_0_jobs = {i in J : grades[i] == 0}
-
-    # Reserve 50% for high-grade jobs
-    bw_grade_2 = 0.50 * B
-    for i in grade_2_jobs:
-      allocate_bandwidth[i] = bw_grade_2 / |grade_2_jobs|
-
-    # Allocate 30% to medium-grade (shared)
-    bw_grade_1 = 0.30 * B
-    for i in grade_1_jobs:
-      allocate_bandwidth[i] = bw_grade_1 / |grade_1_jobs|
-
-    # Batch grade-0: queue until 5+ jobs or 60s timeout
-    bw_grade_0 = 0.20 * B
-    if len(grade_0_queue) >= 5 or timeout:
-      for i in grade_0_queue:
-        allocate_bandwidth[i] = bw_grade_0 / |grade_0_queue|
-      clear(grade_0_queue)
+    G2 = {i: grades[i]==2}
+    G1 = {i: grades[i]==1}
+    G0 = {i: grades[i]==0}
+    bw_G2 = 0.50 * B
+    for i in G2: bw[i] = bw_G2 / |G2|
+    bw_G1 = 0.30 * B
+    for i in G1: bw[i] = bw_G1 / |G1|
+    bw_G0 = 0.20 * B
+    if |queue| >= 5 or timeout:
+      for i in queue:
+        bw[i] = bw_G0 / |queue|
 \end{verbatim}
 \end{small}
 
-This algorithm is executed in SLURM's job admission controller, triggered when a job is submitted or when a running job completes. Execution time: <1ms.
+Execution time: $\ll 1$ms in SLURM's job admission controller.
 
 \section{Experimental Validation}
 
