@@ -22,8 +22,6 @@ In shared HPC environments, competing workloads contend for network bandwidth. C
 
 ```
 GradeNet_Complete_Project/
-├── GradeNet_TPDS2026.pdf          (6 pages, main paper)
-├── GradeNet_TPDS2026.tex          (LaTeX source)
 ├── README.md                       (this file)
 ├── requirements.txt                (Python dependencies)
 ├── code/
@@ -31,15 +29,10 @@ GradeNet_Complete_Project/
 ├── data/
 │   ├── gradenet_measurements.csv   (56 workloads × 8 network configs × 5 runs)
 │   └── validation_results.csv      (SLA compliance, latency, throughput)
-├── figs/
-│   ├── Fig1_network_demand_by_class.pdf
-│   ├── Fig2_latency_breakdown.pdf
-│   └── Fig3_sla_validation.pdf
-└── docs/
-    ├── METHODOLOGY.md
-    ├── PLAGIARISM_CHECK.md
-    ├── PROJECT_STATUS.txt
-    └── SUBMISSION_READY.txt
+└── figs/
+    ├── Fig1_network_demand_by_class.pdf
+    ├── Fig2_latency_breakdown.pdf
+    └── Fig3_sla_validation.pdf
 ```
 
 ## Quick Start
