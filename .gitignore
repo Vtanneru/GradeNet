@@ -19,3 +19,5 @@ venv/
 *.egg
 .idea/
 .vscode/
+*.pdf
+*.tex
