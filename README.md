@@ -67,11 +67,6 @@ python code/gradenet_analysis.py
 7. **Discussion** — Limitations, deployment considerations
 8. **Conclusion**
 
-## Originality
-
-- **95%+ original content** — novel grading system, original measurements
-- **< 5% plagiarism risk** — no copied methodology
-- **< 20% AI-detection risk** — personal voice, technical depth
 
 ## Author
 
@@ -79,20 +74,3 @@ python code/gradenet_analysis.py
 Independent Researcher  
 venkytanneru@gmail.com
 
-## Citation
-
-If you use GradeNet:
-
-```bibtex
-@article{tanneru2026gradenet,
-  title={GradeNet: Intelligent Network Slicing for Multi-Tenant HPC Clusters},
-  author={Tanneru, Venkateswarlu},
-  journal={IEEE Transactions on Parallel and Distributed Systems (TPDS)},
-  year={2026},
-  note={Submitted to TPDS 2026}
-}
-```
-
----
-
-**Status:** ✅ Complete, ready for submission
